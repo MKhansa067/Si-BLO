@@ -22,9 +22,15 @@ public class PageController {
     }
 
     @GetMapping({"/", "/home"})
-    public String home(Model model) {
+    public String home(@RequestParam(required = false) String search, Model model) {
         List<SportDTO> sports = sportService.getAllSports();
-        List<CourtDTO> courts = courtService.getActiveCourts(null);
+        List<CourtDTO> courts;
+        if (search != null && !search.isBlank()) {
+            courts = courtService.searchCourts(search);
+            model.addAttribute("searchQuery", search);
+        } else {
+            courts = courtService.getActiveCourts(null);
+        }
         long availableCount = courtService.getAvailableCourtsCount();
         model.addAttribute("sports", sports);
         model.addAttribute("courts", courts);
@@ -35,15 +41,17 @@ public class PageController {
 
     @GetMapping("/booking")
     public String booking(@RequestParam(required = false) Long courtId, Model model) {
+        List<CourtDTO> courts = courtService.getActiveCourts(null);
         if (courtId != null) {
             try {
                 model.addAttribute("court", courtService.getCourtById(courtId));
             } catch (RuntimeException e) {
-                addFirstCourt(model);
+                if (!courts.isEmpty()) model.addAttribute("court", courts.get(0));
             }
         } else {
-            addFirstCourt(model);
+            if (!courts.isEmpty()) model.addAttribute("court", courts.get(0));
         }
+        model.addAttribute("courts", courts);
         model.addAttribute("activePage", "booking");
         return "booking";
     }
@@ -67,4 +75,16 @@ public class PageController {
 
     @GetMapping("/login")
     public String login() { return "login"; }
+
+    @GetMapping("/privacy")
+    public String privacy() { return "privacy"; }
+
+    @GetMapping("/terms")
+    public String terms() { return "terms"; }
+
+    @GetMapping("/map")
+    public String mapPage(Model model) {
+        model.addAttribute("activePage", "home");
+        return "map";
+    }
 }

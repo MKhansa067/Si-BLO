@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .requestMatchers("/", "/home", "/login", "/booking", "/my-bookings",
                     "/css/**", "/js/**", "/images/**", "/h2-console/**",
                     "/api/auth/**", "/api/sports/**", "/api/courts/**").permitAll()
-                .requestMatchers("/manage-admin/**", "/api/admin/**").authenticated()
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().permitAll()
             )
             .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))

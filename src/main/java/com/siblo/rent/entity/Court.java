@@ -1,6 +1,7 @@
 package com.siblo.rent.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +53,12 @@ public class Court {
     @Column(name = "badge_label")
     private String badgeLabel;
 
+    @Column(name = "open_time")
+    private LocalTime openTime;
+
+    @Column(name = "close_time")
+    private LocalTime closeTime;
+
     @OneToMany(mappedBy = "court", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TimeSlot> timeSlots = new ArrayList<>();
 
@@ -61,12 +68,13 @@ public class Court {
 
     public Court(Long id, Venue venue, Sport sport, String name, String description, String surfaceType,
                  Boolean indoor, Integer pricePerHour, Integer capacity, Double rating, Integer reviewCount,
-                 CourtStatus status, String imageUrl, String badgeLabel) {
+                 CourtStatus status, String imageUrl, String badgeLabel,
+                 LocalTime openTime, LocalTime closeTime) {
         this.id = id; this.venue = venue; this.sport = sport; this.name = name;
         this.description = description; this.surfaceType = surfaceType; this.indoor = indoor;
         this.pricePerHour = pricePerHour; this.capacity = capacity; this.rating = rating;
         this.reviewCount = reviewCount; this.status = status; this.imageUrl = imageUrl;
-        this.badgeLabel = badgeLabel;
+        this.badgeLabel = badgeLabel; this.openTime = openTime; this.closeTime = closeTime;
     }
 
     public static CourtBuilder builder() { return new CourtBuilder(); }
@@ -76,7 +84,7 @@ public class Court {
         private String description; private String surfaceType; private Boolean indoor;
         private Integer pricePerHour; private Integer capacity; private Double rating;
         private Integer reviewCount; private CourtStatus status; private String imageUrl;
-        private String badgeLabel;
+        private String badgeLabel; private LocalTime openTime; private LocalTime closeTime;
         CourtBuilder() {}
         public CourtBuilder id(Long id) { this.id = id; return this; }
         public CourtBuilder venue(Venue venue) { this.venue = venue; return this; }
@@ -92,7 +100,9 @@ public class Court {
         public CourtBuilder status(CourtStatus status) { this.status = status; return this; }
         public CourtBuilder imageUrl(String imageUrl) { this.imageUrl = imageUrl; return this; }
         public CourtBuilder badgeLabel(String badgeLabel) { this.badgeLabel = badgeLabel; return this; }
-        public Court build() { return new Court(id, venue, sport, name, description, surfaceType, indoor, pricePerHour, capacity, rating, reviewCount, status, imageUrl, badgeLabel); }
+        public CourtBuilder openTime(LocalTime openTime) { this.openTime = openTime; return this; }
+        public CourtBuilder closeTime(LocalTime closeTime) { this.closeTime = closeTime; return this; }
+        public Court build() { return new Court(id, venue, sport, name, description, surfaceType, indoor, pricePerHour, capacity, rating, reviewCount, status, imageUrl, badgeLabel, openTime, closeTime); }
     }
 
     public Long getId() { return id; }
@@ -123,6 +133,10 @@ public class Court {
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
     public String getBadgeLabel() { return badgeLabel; }
     public void setBadgeLabel(String badgeLabel) { this.badgeLabel = badgeLabel; }
+    public LocalTime getOpenTime() { return openTime; }
+    public void setOpenTime(LocalTime openTime) { this.openTime = openTime; }
+    public LocalTime getCloseTime() { return closeTime; }
+    public void setCloseTime(LocalTime closeTime) { this.closeTime = closeTime; }
     public List<TimeSlot> getTimeSlots() { return timeSlots; }
     public void setTimeSlots(List<TimeSlot> timeSlots) { this.timeSlots = timeSlots; }
 }

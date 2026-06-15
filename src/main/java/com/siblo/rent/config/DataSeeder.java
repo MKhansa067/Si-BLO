@@ -57,10 +57,10 @@ public class DataSeeder implements CommandLineRunner {
         Sport badminton = sportRepository.save(Sport.builder().name("Badminton").slug("badminton").icon("🏸").locationCount(6).build());
         Sport tennis = sportRepository.save(Sport.builder().name("Tennis").slug("tennis").icon("🎾").locationCount(4).build());
 
-        Venue downtown = venueRepository.save(Venue.builder().name("Downtown Arena").address("123 Main St").zone("Central").build());
-        Venue glassHub = venueRepository.save(Venue.builder().name("Glass Hub").address("456 Park Ave").zone("Westside").build());
-        Venue eastSide = venueRepository.save(Venue.builder().name("East Side Complex").address("789 East Blvd").zone("Eastside").build());
-        Venue grandSlam = venueRepository.save(Venue.builder().name("Grand Slam Center").address("321 Sports Rd").zone("Central").build());
+        Venue downtown = venueRepository.save(Venue.builder().name("Downtown Arena").address("123 Main St").zone("Central").latitude(-6.2088).longitude(106.8456).build());
+        Venue glassHub = venueRepository.save(Venue.builder().name("Glass Hub").address("456 Park Ave").zone("Westside").latitude(-6.2250).longitude(106.8000).build());
+        Venue eastSide = venueRepository.save(Venue.builder().name("East Side Complex").address("789 East Blvd").zone("Eastside").latitude(-6.2200).longitude(106.8800).build());
+        Venue grandSlam = venueRepository.save(Venue.builder().name("Grand Slam Center").address("321 Sports Rd").zone("Central").latitude(-6.2400).longitude(106.8600).build());
 
         Court court1 = courtRepository.save(Court.builder().venue(downtown).sport(basketball)
             .name("Skyline Hoops Premium").description("Premium basketball court with professional flooring and stadium lighting.")
@@ -104,7 +104,7 @@ public class DataSeeder implements CommandLineRunner {
         int[] hours = {6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22};
 
         for (Court court : allCourts) {
-            for (int day = 0; day < 7; day++) {
+            for (int day = 0; day < 14; day++) {
                 LocalDate date = today.plusDays(day);
                 for (int hour : hours) {
                     LocalTime start = LocalTime.of(hour, 0);

@@ -1,12 +1,16 @@
 package com.siblo.rent.controller;
 
 import com.siblo.rent.dto.*;
+import com.siblo.rent.repository.TimeSlotRepository;
 import com.siblo.rent.service.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -15,11 +19,13 @@ public class AdminController {
     private final AdminService adminService;
     private final CourtService courtService;
     private final BookingService bookingService;
+    private final TimeSlotRepository timeSlotRepository;
 
-    public AdminController(AdminService adminService, CourtService courtService, BookingService bookingService) {
+    public AdminController(AdminService adminService, CourtService courtService, BookingService bookingService, TimeSlotRepository timeSlotRepository) {
         this.adminService = adminService;
         this.courtService = courtService;
         this.bookingService = bookingService;
+        this.timeSlotRepository = timeSlotRepository;
     }
 
     @GetMapping("/stats/dashboard")
@@ -52,6 +58,25 @@ public class AdminController {
     public ResponseEntity<Void> deleteCourt(@PathVariable Long id) {
         courtService.deleteCourt(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/courts/{id}/slots")
+    public ResponseEntity<Void> generateSlots(@PathVariable Long id, @RequestParam(defaultValue = "14") int days) {
+        courtService.generateSlots(id, days);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/courts/{id}/slots/count")
+    public ResponseEntity<Map<String, Object>> getSlotCount(@PathVariable Long id) {
+        CourtDTO court = courtService.getCourtById(id);
+        List<java.time.LocalDate> dates = timeSlotRepository.findByCourtIdAndDateAfter(id, java.time.LocalDate.now())
+            .stream().map(ts -> ts.getDate()).distinct().sorted().collect(Collectors.toList());
+        long count = timeSlotRepository.countByCourtIdAndDateAfter(id, java.time.LocalDate.now());
+        return ResponseEntity.ok(Map.of(
+            "count", count,
+            "dates", dates.stream().map(d -> d.format(DateTimeFormatter.ofPattern("EEE, MMM d"))).collect(Collectors.toList()),
+            "message", count > 0 ? "Slots exist for " + dates.size() + " upcoming days." : "No slots generated yet. Click generate to create slots."
+        ));
     }
 
     @GetMapping("/bookings/timeline")

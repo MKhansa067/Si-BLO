@@ -1,5 +1,6 @@
 package com.siblo.rent.controller;
 
+import com.siblo.rent.dto.UserDTO;
 import com.siblo.rent.entity.User;
 import com.siblo.rent.entity.User.Role;
 import com.siblo.rent.repository.UserRepository;
@@ -7,6 +8,7 @@ import com.siblo.rent.security.JwtTokenProvider;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
@@ -41,6 +43,41 @@ public class AuthController {
             "name", user.getName(), "role", user.getRole().name(),
             "membershipTier", user.getMembershipTier()
         ));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> me(Authentication auth) {
+        User user = userRepository.findByEmail(auth.getName())
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        return ResponseEntity.ok(UserDTO.fromEntity(user));
+    }
+
+    @PatchMapping("/profile")
+    public ResponseEntity<?> updateProfile(Authentication auth, @RequestBody Map<String, String> body) {
+        User user = userRepository.findByEmail(auth.getName())
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        if (body.containsKey("name")) user.setName(body.get("name"));
+        if (body.containsKey("email")) {
+            String newEmail = body.get("email");
+            if (!newEmail.equals(user.getEmail()) && userRepository.existsByEmail(newEmail))
+                return ResponseEntity.badRequest().body(Map.of("error", "Email already in use"));
+            user.setEmail(newEmail);
+        }
+        userRepository.save(user);
+        return ResponseEntity.ok(UserDTO.fromEntity(user));
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<?> changePassword(Authentication auth, @RequestBody Map<String, String> body) {
+        User user = userRepository.findByEmail(auth.getName())
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        String oldPassword = body.get("oldPassword");
+        String newPassword = body.get("newPassword");
+        if (!passwordEncoder.matches(oldPassword, user.getPassword()))
+            return ResponseEntity.badRequest().body(Map.of("error", "Current password is incorrect"));
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return ResponseEntity.ok(Map.of("message", "Password changed successfully"));
     }
 
     @PostMapping("/register")

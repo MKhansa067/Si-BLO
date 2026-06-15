@@ -1,9 +1,12 @@
 package com.siblo.rent.dto;
 
+import java.time.LocalTime;
+
 public class CourtRequest {
     private String name; private String description; private String surfaceType;
     private Boolean indoor; private Integer pricePerHour; private Integer capacity;
-    private String status; private Long sportId; private Long venueId;
+    private String status; private Long sportId; private Long venueId; private String imageUrl;
+    private LocalTime openTime; private LocalTime closeTime;
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -23,4 +26,10 @@ public class CourtRequest {
     public void setSportId(Long sportId) { this.sportId = sportId; }
     public Long getVenueId() { return venueId; }
     public void setVenueId(Long venueId) { this.venueId = venueId; }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public LocalTime getOpenTime() { return openTime; }
+    public void setOpenTime(LocalTime openTime) { this.openTime = openTime; }
+    public LocalTime getCloseTime() { return closeTime; }
+    public void setCloseTime(LocalTime closeTime) { this.closeTime = closeTime; }
 }

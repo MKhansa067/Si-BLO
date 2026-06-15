@@ -1,6 +1,7 @@
 package com.siblo.rent.dto;
 
 import com.siblo.rent.entity.Court;
+import java.time.LocalTime;
 
 public class CourtDTO {
     private Long id; private String name; private String description; private String surfaceType;
@@ -8,6 +9,7 @@ public class CourtDTO {
     private Double rating; private Integer reviewCount; private String status;
     private String imageUrl; private String badgeLabel; private String sportName;
     private String venueName; private String venueZone;
+    private LocalTime openTime; private LocalTime closeTime;
 
     public CourtDTO() {}
 
@@ -23,6 +25,8 @@ public class CourtDTO {
         dto.setSportName(court.getSport() != null ? court.getSport().getName() : null);
         dto.setVenueName(court.getVenue() != null ? court.getVenue().getName() : null);
         dto.setVenueZone(court.getVenue() != null ? court.getVenue().getZone() : null);
+        dto.setOpenTime(court.getOpenTime());
+        dto.setCloseTime(court.getCloseTime());
         return dto;
     }
 
@@ -56,4 +60,8 @@ public class CourtDTO {
     public void setVenueName(String venueName) { this.venueName = venueName; }
     public String getVenueZone() { return venueZone; }
     public void setVenueZone(String venueZone) { this.venueZone = venueZone; }
+    public LocalTime getOpenTime() { return openTime; }
+    public void setOpenTime(LocalTime openTime) { this.openTime = openTime; }
+    public LocalTime getCloseTime() { return closeTime; }
+    public void setCloseTime(LocalTime closeTime) { this.closeTime = closeTime; }
 }

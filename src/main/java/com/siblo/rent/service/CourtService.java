@@ -5,10 +5,12 @@ import com.siblo.rent.dto.CourtRequest;
 import com.siblo.rent.dto.TimeSlotDTO;
 import com.siblo.rent.entity.*;
 import com.siblo.rent.entity.Court.CourtStatus;
+import com.siblo.rent.entity.TimeSlot.SlotStatus;
 import com.siblo.rent.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,6 +71,8 @@ public class CourtService {
         court.setReviewCount(0);
         court.setStatus(CourtStatus.ACTIVE);
         court.setSport(sport);
+        court.setOpenTime(request.getOpenTime() != null ? request.getOpenTime() : LocalTime.of(6, 0));
+        court.setCloseTime(request.getCloseTime() != null ? request.getCloseTime() : LocalTime.of(22, 0));
         if (request.getVenueId() != null) {
             venueRepository.findById(request.getVenueId()).ifPresent(v -> court.setVenue(v));
         }
@@ -85,6 +89,9 @@ public class CourtService {
         court.setIndoor(request.getIndoor() != null ? request.getIndoor() : court.getIndoor());
         court.setPricePerHour(request.getPricePerHour());
         court.setCapacity(request.getCapacity());
+        if (request.getImageUrl() != null) court.setImageUrl(request.getImageUrl());
+        if (request.getOpenTime() != null) court.setOpenTime(request.getOpenTime());
+        if (request.getCloseTime() != null) court.setCloseTime(request.getCloseTime());
         if (request.getStatus() != null) {
             court.setStatus(CourtStatus.valueOf(request.getStatus()));
         }
@@ -108,5 +115,26 @@ public class CourtService {
 
     public List<CourtDTO> getAllCourtsForAdmin() {
         return courtRepository.findAll().stream().map(CourtDTO::fromEntity).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void generateSlots(Long courtId, int days) {
+        Court court = courtRepository.findById(courtId)
+            .orElseThrow(() -> new RuntimeException("Court not found"));
+        LocalTime open = court.getOpenTime() != null ? court.getOpenTime() : LocalTime.of(6, 0);
+        LocalTime close = court.getCloseTime() != null ? court.getCloseTime() : LocalTime.of(22, 0);
+        LocalDate today = LocalDate.now();
+
+        for (int day = 0; day < days; day++) {
+            LocalDate date = today.plusDays(day);
+            for (int hour = open.getHour(); hour < close.getHour(); hour++) {
+                boolean exists = timeSlotRepository.existsByCourtIdAndDateAndStartTime(courtId, date, LocalTime.of(hour, 0));
+                if (!exists) {
+                    timeSlotRepository.save(TimeSlot.builder().court(court).date(date)
+                        .startTime(LocalTime.of(hour, 0)).endTime(LocalTime.of(hour + 1, 0))
+                        .status(SlotStatus.AVAILABLE).build());
+                }
+            }
+        }
     }
 }

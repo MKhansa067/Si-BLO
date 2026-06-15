@@ -15,7 +15,9 @@ public interface CourtRepository extends JpaRepository<Court, Long> {
 
     @Query("SELECT c FROM Court c WHERE c.status = 'ACTIVE' AND " +
            "(LOWER(c.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           "LOWER(c.description) LIKE LOWER(CONCAT('%', :search, '%')))")
+           "LOWER(c.description) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           "LOWER(c.sport.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           "LOWER(c.venue.name) LIKE LOWER(CONCAT('%', :search, '%')))")
     List<Court> searchCourts(@Param("search") String search);
 
     @Query("SELECT c FROM Court c WHERE c.status = 'ACTIVE' AND (:sportId IS NULL OR c.sport.id = :sportId)")
