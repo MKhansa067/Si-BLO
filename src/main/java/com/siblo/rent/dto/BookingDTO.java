@@ -2,13 +2,14 @@ package com.siblo.rent.dto;
 
 import com.siblo.rent.entity.Booking;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 public class BookingDTO {
     private Long id; private Long userId; private String userName; private Long courtId;
     private String courtName; private String courtImageUrl; private String venueName;
-    private LocalDate date; private LocalTime startTime; private LocalTime endTime;
-    private Integer totalPrice; private String status; private LocalDate createdAt;
+    private LocalDate date; private String startTime; private String endTime;
+    private Integer totalPrice; private String status; private LocalDateTime createdAt;
+    private LocalDateTime paymentExpiresAt;
 
     public BookingDTO() {}
 
@@ -23,11 +24,12 @@ public class BookingDTO {
         dto.setVenueName(booking.getCourt() != null && booking.getCourt().getVenue() != null
             ? booking.getCourt().getVenue().getName() : null);
         dto.setDate(booking.getDate());
-        dto.setStartTime(booking.getStartTime());
-        dto.setEndTime(booking.getEndTime());
+        dto.setStartTime(booking.getStartTime() != null ? booking.getStartTime().toString() : null);
+        dto.setEndTime(booking.getEndTime() != null ? booking.getEndTime().toString() : null);
         dto.setTotalPrice(booking.getTotalPrice());
         dto.setStatus(booking.getStatus() != null ? booking.getStatus().name() : null);
         dto.setCreatedAt(booking.getCreatedAt());
+        dto.setPaymentExpiresAt(booking.getPaymentExpiresAt());
         return dto;
     }
 
@@ -47,14 +49,16 @@ public class BookingDTO {
     public void setVenueName(String venueName) { this.venueName = venueName; }
     public LocalDate getDate() { return date; }
     public void setDate(LocalDate date) { this.date = date; }
-    public LocalTime getStartTime() { return startTime; }
-    public void setStartTime(LocalTime startTime) { this.startTime = startTime; }
-    public LocalTime getEndTime() { return endTime; }
-    public void setEndTime(LocalTime endTime) { this.endTime = endTime; }
+    public String getStartTime() { return startTime; }
+    public void setStartTime(String startTime) { this.startTime = startTime; }
+    public String getEndTime() { return endTime; }
+    public void setEndTime(String endTime) { this.endTime = endTime; }
     public Integer getTotalPrice() { return totalPrice; }
     public void setTotalPrice(Integer totalPrice) { this.totalPrice = totalPrice; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
-    public LocalDate getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDate createdAt) { this.createdAt = createdAt; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public LocalDateTime getPaymentExpiresAt() { return paymentExpiresAt; }
+    public void setPaymentExpiresAt(LocalDateTime paymentExpiresAt) { this.paymentExpiresAt = paymentExpiresAt; }
 }

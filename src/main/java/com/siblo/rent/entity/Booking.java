@@ -2,6 +2,7 @@ package com.siblo.rent.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,13 +44,18 @@ public class Booking {
     @Column(nullable = false)
     private BookingStatus status;
 
+    @Column(name = "payment_expires_at")
+    private LocalDateTime paymentExpiresAt;
+
     @Column(name = "created_at")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     public enum BookingStatus { CONFIRMED, PENDING_PAYMENT, COMPLETED, CANCELLED, ACTIVE }
 
     @PrePersist
-    protected void onCreate() { createdAt = LocalDate.now(); }
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
     public Booking() {}
 
@@ -97,6 +103,8 @@ public class Booking {
     public void setTotalPrice(Integer totalPrice) { this.totalPrice = totalPrice; }
     public BookingStatus getStatus() { return status; }
     public void setStatus(BookingStatus status) { this.status = status; }
-    public LocalDate getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDate createdAt) { this.createdAt = createdAt; }
+    public LocalDateTime getPaymentExpiresAt() { return paymentExpiresAt; }
+    public void setPaymentExpiresAt(LocalDateTime paymentExpiresAt) { this.paymentExpiresAt = paymentExpiresAt; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

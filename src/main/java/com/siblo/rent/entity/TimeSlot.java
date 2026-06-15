@@ -32,7 +32,7 @@ public class TimeSlot {
     @Version
     private Long version;
 
-    public enum SlotStatus { AVAILABLE, BOOKED, BLOCKED }
+    public enum SlotStatus { AVAILABLE, HELD, BOOKED, BLOCKED }
 
     public TimeSlot() {}
 

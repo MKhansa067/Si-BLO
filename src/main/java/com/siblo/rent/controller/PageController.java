@@ -4,6 +4,7 @@ import com.siblo.rent.dto.CourtDTO;
 import com.siblo.rent.dto.SportDTO;
 import com.siblo.rent.service.CourtService;
 import com.siblo.rent.service.SportService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,9 @@ public class PageController {
 
     private final SportService sportService;
     private final CourtService courtService;
+
+    @Value("${app.scheduling.date-scroller-days:14}")
+    private int dateScrollerDays;
 
     public PageController(SportService sportService, CourtService courtService) {
         this.sportService = sportService;
@@ -52,6 +56,7 @@ public class PageController {
             if (!courts.isEmpty()) model.addAttribute("court", courts.get(0));
         }
         model.addAttribute("courts", courts);
+        model.addAttribute("dateScrollerDays", dateScrollerDays);
         model.addAttribute("activePage", "booking");
         return "booking";
     }

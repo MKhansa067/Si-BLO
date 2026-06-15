@@ -85,4 +85,14 @@ public class AdminController {
         if (date == null) date = LocalDate.now();
         return ResponseEntity.ok(bookingService.getTimeline(date));
     }
+
+    @GetMapping("/bookings/all")
+    public ResponseEntity<List<BookingDTO>> getAllBookings() {
+        return ResponseEntity.ok(bookingService.getAllBookings());
+    }
+
+    @PostMapping("/bookings/{id}/confirm")
+    public ResponseEntity<BookingDTO> confirmBooking(@PathVariable Long id) {
+        return ResponseEntity.ok(bookingService.adminConfirmBooking(id));
+    }
 }

@@ -16,7 +16,31 @@
             <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clip-rule="evenodd"/></svg>
         </button>
         <a th:href="@{/booking}" class="btn-quick-book">Quick Book</a>
+        <div id="userMenu" style="display: none; align-items: center; gap: var(--space-3);">
+            <span id="userName" style="font-size: 14px; font-weight: 600;"></span>
+            <button onclick="logout()" style="background: rgba(255,255,255,0.1); border: 1px solid var(--color-border-default); color: var(--color-text-secondary); padding: 6px 12px; border-radius: var(--radius-sm); cursor: pointer; font-size: 12px;">Logout</button>
+        </div>
     </div>
 </header>
+<script>
+(function() {
+    const token = localStorage.getItem('token');
+    if (token) {
+        try {
+            const parts = token.split('.');
+            if (parts.length === 3) {
+                const payload = JSON.parse(atob(parts[1]));
+                const name = payload.name || payload.sub || 'User';
+                document.getElementById('userName').textContent = name;
+                document.getElementById('userMenu').style.display = 'flex';
+            }
+        } catch(e) {}
+    }
+})();
+function logout() {
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+}
+</script>
 </body>
 </html>
