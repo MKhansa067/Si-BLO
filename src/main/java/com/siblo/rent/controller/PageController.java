@@ -81,6 +81,9 @@ public class PageController {
     @GetMapping("/login")
     public String login() { return "login"; }
 
+    @GetMapping("/register")
+    public String register() { return "register"; }
+
     @GetMapping("/privacy")
     public String privacy() { return "privacy"; }
 

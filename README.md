@@ -1,6 +1,6 @@
 # SI-BLO — Pro Court Rentals
 
-> A sports court rental platform built with Spring Boot. Users can browse sports, book courts, manage bookings, and admins can manage the system.
+> A sports court rental platform built with Spring Boot. Users can browse sports, book courts, manage bookings (pay, cancel, reschedule), and admins can manage courts, confirm bookings, and view all user bookings.
 
 ---
 
@@ -42,8 +42,8 @@ siblo/
     │   │   ├── AuthController.java           POST /api/auth/login, POST /api/auth/register
     │   │   ├── CourtController.java          GET /api/courts, /api/courts/{id}, /api/courts/{id}/availability
     │   │   ├── SportController.java          GET /api/sports, /api/sports/{id}
-    │   │   ├── BookingController.java        GET/POST/PATCH /api/bookings/*
-    │   │   └── AdminController.java          Admin CRUD: stats, courts, timeline
+    │   │   ├── BookingController.java        GET/POST/PATCH /api/bookings/me, create, cancel, pay, reschedule
+    │   │   └── AdminController.java          Admin CRUD: stats, courts, timeline, all bookings, confirm
     │   │
     │   ├── dto/                               Data Transfer Objects (API request/response shapes)
     │   │   ├── SportDTO.java                 Sport response (id, name, slug, icon, locationCount, imageUrl)
@@ -52,6 +52,8 @@ siblo/
     │   │   ├── TimeSlotDTO.java              Time slot response (id, startTime, endTime, status)
     │   │   ├── BookingDTO.java               Booking response (includes user/court details)
     │   │   ├── BookingRequest.java           Booking create request (courtId, slotIds, date)
+    │   │   ├── BookingUpdateRequest.java     Booking update (action, courtId, slotIds, date)
+    │   │   ├── UserDTO.java                  User response (profile info)
     │   │   └── AdminStatsDTO.java            Dashboard stats (revenue, bookings, capacity, slots)
     │   │
     │   ├── entity/                            JPA entities (database tables)
@@ -67,8 +69,9 @@ siblo/
     │   │   ├── SportRepository.java          findBySlug
     │   │   ├── VenueRepository.java          Default CRUD only
     │   │   ├── CourtRepository.java          findBySportId, searchCourts, findActiveCourts, countByStatus
-    │   │   ├── TimeSlotRepository.java       findByCourtIdAndDate, countCourtsWithAvailableSlots
-    │   │   └── BookingRepository.java        findByUserId, findByCourtIdAndDate, sumRevenueByDate
+    │   │   ├── TimeSlotRepository.java       findByCourtIdAndDate, countCourtsWithAvailableSlots, findAllByIdForUpdate
+    │   │   ├── BookingRepository.java        findUpcoming, findPast, sumRevenueByDate, findConfirmedReadyToComplete
+    │   │   └── PaymentRepository.java        Payment CRUD
     │   │
     │   ├── security/                          JWT authentication layer
     │   │   ├── JwtTokenProvider.java          Generate/validate/parse JWT tokens
@@ -77,9 +80,12 @@ siblo/
     │   │
     │   └── service/                           Business logic layer
     │       ├── SportService.java              List sports, get by ID
-    │       ├── CourtService.java              Active courts, search, availability, CRUD for admin
-    │       ├── BookingService.java            Create/cancel/pay bookings, user bookings, timeline
-    │       └── AdminService.java              Dashboard statistics aggregation
+    │       ├── CourtService.java              Active courts, search, availability, CRUD for admin, slot generation
+    │       ├── BookingService.java            Create/cancel/pay/reschedule, user bookings, all bookings, admin confirm
+    │       ├── AdminService.java              Dashboard statistics aggregation
+    │       ├── PaymentService.java            Complete/refund payments
+    │       ├── BookingExpiryService.java      Expire PENDING_PAYMENT bookings past timeout
+    │       └── BookingLifecycleService.java   Auto-advance CONFIRMED→ACTIVE→COMPLETED lifecycle
     │
     └── resources/
         ├── application.properties            All config (DB, JPA, JWT, Thymeleaf)
@@ -171,9 +177,11 @@ These accounts are **auto-seeded** every time the app starts:
 git clone https://github.com/MKhansa067/Si-BLO.git
 cd Si-BLO
 
-# 2. Create your feature branch
-git checkout -b your-feature-name
+# 2. Create your own branch (replace "your-name/feature-name" with your actual branch)
+git checkout -b your-name/feature-name
 ```
+
+> **What is "your-name/feature-name"?** It's your personal branch — each team member creates their own (e.g. `khansa/fix-booking`, `andi/admin-auth`, `budi/ui-darkmode`). This keeps everyone's work isolated so you can compare, review, and merge changes without conflicts.
 
 ### After making changes
 
@@ -181,14 +189,15 @@ git checkout -b your-feature-name
 # 1. Check what changed
 git status
 
-# 2. Stage the files you want to commit
+# 2. Stage all modified/new files
 git add .
 
 # 3. Commit with a meaningful message
 git commit -m "brief description of your changes"
 
 # 4. Push to GitHub (first time for your branch)
-git push -u origin your-feature-name
+#    Replace with YOUR actual branch name you created earlier
+git push -u origin your-name/feature-name
 
 # Subsequent pushes on the same branch
 git push
@@ -200,7 +209,9 @@ Someone pushed changes before you. Update your local repo:
 
 ```bash
 git pull --rebase origin master
-git push -u origin your-feature-name
+
+# Push again with YOUR branch name
+git push -u origin your-name/feature-name
 ```
 
 ### Working with the main branch
@@ -210,8 +221,8 @@ git push -u origin your-feature-name
 git checkout master
 git pull origin master
 
-# Merge your feature into master (then push)
-git merge your-feature-name
+# Merge YOUR feature branch into master (then push)
+git merge your-name/feature-name
 git push origin master
 ```
 
@@ -253,10 +264,10 @@ git push origin master
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/api/bookings/me` | Current user's bookings (`?upcoming=true`) |
-| POST | `/api/bookings` | Create a booking |
-| PATCH | `/api/bookings/{id}` | Cancel a booking |
-| POST | `/api/bookings/{id}/pay` | Pay for a booking |
+| GET | `/api/bookings/me` | Current user's bookings (`?upcoming=true`, `?past=true`) |
+| POST | `/api/bookings` | Create a booking (courtId, slotIds, date) |
+| PATCH | `/api/bookings/{id}` | Cancel or reschedule a booking (send `action`, `courtId`, `slotIds`, `date` in body) |
+| POST | `/api/bookings/{id}/pay` | Pay for a PENDING_PAYMENT booking |
 
 ### Admin (requires admin JWT)
 
@@ -269,16 +280,23 @@ git push origin master
 | PATCH | `/api/admin/courts/{id}/availability` | Toggle court active/inactive |
 | DELETE | `/api/admin/courts/{id}` | Delete a court |
 | GET | `/api/admin/bookings/timeline` | Today's booking timeline |
+| GET | `/api/admin/bookings/all` | All users' bookings (for admin "Users Bookings" page) |
+| POST | `/api/admin/bookings/{id}/confirm` | Admin-confirm a PENDING_PAYMENT booking |
 
 ---
 
 ## Features
 
-- **Role-based access** — Member vs Admin
+- **Role-based access** — Member vs Admin (JWT stored in localStorage)
 - **JWT Authentication** — login, register, token-based API security
 - **Smart booking** — select date, pick consecutive time slots, checkout
+- **Booking lifecycle** — PENDING_PAYMENT → CONFIRMED → ACTIVE → COMPLETED (auto-advanced via scheduling)
+- **Cancel & Reschedule** — cancel bookings (slots released), reschedule to different date/slots
+- **Payment** — simulate payment flow (PENDING_PAYMENT → CONFIRMED)
+- **Admin booking management** — view all users' bookings, confirm PENDING_PAYMENT bookings directly
 - **Admin dashboard** — revenue stats, court CRUD, booking timeline
-- **Responsive UI** — desktop sidebar + mobile bottom nav
+- **Booking expiry** — auto-expire unpaid bookings after timeout
+- **Responsive UI** — desktop sidebar + mobile bottom nav with role-aware navigation labels
 - **Dark theme** — Custom CSS design system with CSS variables
 - **Auto seed data** — 2 users, 5 sports, 4 venues, 8 courts, time slots for 7 days, sample bookings
 - **H2 in-memory** — Zero database setup needed
