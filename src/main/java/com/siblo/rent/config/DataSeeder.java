@@ -88,16 +88,32 @@ public class DataSeeder implements CommandLineRunner {
         .imageUrl("/images/skyline-Hoops.png")
         .build()
 );
-        courtRepository.save(Court.builder().venue(glassHub).sport(padel)
-            .name("Velocity Padel Center").description("Professional padel court with synthetic turf and glass walls.")
-            .surfaceType("Synthetic").indoor(true).pricePerHour(260000).capacity(4)
-            .rating(5.0).reviewCount(89).status(CourtStatus.ACTIVE).badgeLabel("TOP RATED").build());
-
-        courtRepository.save(Court.builder().venue(eastSide).sport(futsal)
-            .name("Striker Futsal Indoor").description("Indoor futsal court with high-quality artificial grass.")
-            .surfaceType("Artificial Grass").indoor(true).pricePerHour(255000).capacity(12)
-            .rating(4.7).reviewCount(215).status(CourtStatus.ACTIVE).badgeLabel("2 SLOTS LEFT").build());
-
+       courtRepository.save(Court.builder().venue(glassHub).sport(padel)
+    .name("Velocity Padel Center")
+    .description("Professional padel court with synthetic turf and glass walls.")
+    .surfaceType("Synthetic")
+    .indoor(true)
+    .pricePerHour(260000)
+    .capacity(4)
+    .rating(5.0)
+    .reviewCount(89)
+    .status(CourtStatus.ACTIVE)
+    .badgeLabel("TOP RATED")
+    .imageUrl("/images/velocity-padelCenter.png")
+    .build());
+       courtRepository.save(Court.builder().venue(eastSide).sport(futsal)
+    .name("Striker Futsal Indoor")
+    .description("Indoor futsal court with high-quality artificial grass.")
+    .surfaceType("Artificial Grass")
+    .indoor(true)
+    .pricePerHour(255000)
+    .capacity(12)
+    .rating(4.7)
+    .reviewCount(215)
+    .status(CourtStatus.ACTIVE)
+    .badgeLabel("2 SLOTS LEFT")
+    .imageUrl("/images/strikerFutsalIndoor.png")
+    .build());
         courtRepository.save(Court.builder().venue(grandSlam).sport(tennis)
             .name("Grand Slam Center - Court 04").description("Premium professional acrylic surface with advanced shock absorption technology.")
             .surfaceType("Acrylic").indoor(true).pricePerHour(350000).capacity(4)
