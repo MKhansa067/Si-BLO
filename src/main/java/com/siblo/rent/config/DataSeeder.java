@@ -71,11 +71,23 @@ public class DataSeeder implements CommandLineRunner {
         Venue eastSide = venueRepository.save(Venue.builder().name("East Side Complex").address("789 East Blvd").zone("Eastside").latitude(-6.2200).longitude(106.8800).build());
         Venue grandSlam = venueRepository.save(Venue.builder().name("Grand Slam Center").address("321 Sports Rd").zone("Central").latitude(-6.2400).longitude(106.8600).build());
 
-        Court court1 = courtRepository.save(Court.builder().venue(downtown).sport(basketball)
-            .name("Skyline Hoops Premium").description("Premium basketball court with professional flooring and stadium lighting.")
-            .surfaceType("Hardwood").indoor(true).pricePerHour(199000).capacity(10)
-            .rating(4.9).reviewCount(128).status(CourtStatus.ACTIVE).badgeLabel("AVAILABLE").build());
-
+        Court court1 = courtRepository.save(
+    Court.builder()
+        .venue(downtown)
+        .sport(basketball)
+        .name("Skyline Hoops Premium")
+        .description("Premium basketball court with professional flooring and stadium lighting.")
+        .surfaceType("Hardwood")
+        .indoor(true)
+        .pricePerHour(199000)
+        .capacity(10)
+        .rating(4.9)
+        .reviewCount(128)
+        .status(CourtStatus.ACTIVE)
+        .badgeLabel("AVAILABLE")
+        .imageUrl("/images/skyline-Hoops.png")
+        .build()
+);
         courtRepository.save(Court.builder().venue(glassHub).sport(padel)
             .name("Velocity Padel Center").description("Professional padel court with synthetic turf and glass walls.")
             .surfaceType("Synthetic").indoor(true).pricePerHour(260000).capacity(4)
