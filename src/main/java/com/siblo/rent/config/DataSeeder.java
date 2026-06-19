@@ -101,6 +101,7 @@ public class DataSeeder implements CommandLineRunner {
     .badgeLabel("TOP RATED")
     .imageUrl("/images/velocity-padelCenter.png")
     .build());
+
        courtRepository.save(Court.builder().venue(eastSide).sport(futsal)
     .name("Striker Futsal Indoor")
     .description("Indoor futsal court with high-quality artificial grass.")
@@ -112,29 +113,62 @@ public class DataSeeder implements CommandLineRunner {
     .reviewCount(215)
     .status(CourtStatus.ACTIVE)
     .badgeLabel("2 SLOTS LEFT")
-    .imageUrl("/images/strikerFutsalIndoor.png")
+    .imageUrl("/images/strikerFustalIndoor.png")
     .build());
-        courtRepository.save(Court.builder().venue(grandSlam).sport(tennis)
-            .name("Grand Slam Center - Court 04").description("Premium professional acrylic surface with advanced shock absorption technology.")
-            .surfaceType("Acrylic").indoor(true).pricePerHour(350000).capacity(4)
-            .rating(4.8).reviewCount(56).status(CourtStatus.ACTIVE).badgeLabel("PREMIUM").build());
+
+       courtRepository.save(Court.builder().venue(grandSlam).sport(tennis)
+    .name("Grand Slam Center - Court 04")
+    .description("Premium professional acrylic surface with advanced shock absorption technology.")
+    .surfaceType("Acrylic")
+    .indoor(true)
+    .pricePerHour(350000)
+    .capacity(4)
+    .rating(4.8)
+    .reviewCount(56)
+    .status(CourtStatus.ACTIVE)
+    .badgeLabel("PREMIUM")
+    .imageUrl("/images/grandSlamCourt04.png")
+    .build());
 
         courtRepository.save(Court.builder().venue(downtown).sport(badminton)
-            .name("Downtown Badminton Hall").description("Professional badminton court with wooden flooring.")
-            .surfaceType("Wooden").indoor(true).pricePerHour(150000).capacity(4)
-            .rating(4.5).reviewCount(34).status(CourtStatus.ACTIVE).badgeLabel("AVAILABLE").build());
+    .name("Downtown Badminton Hall")
+    .description("Professional badminton court with wooden flooring.")
+    .surfaceType("Wooden")
+    .indoor(true)
+    .pricePerHour(150000)
+    .capacity(4)
+    .rating(4.5)
+    .reviewCount(34)
+    .status(CourtStatus.ACTIVE)
+    .badgeLabel("AVAILABLE")
+    .imageUrl("/images/downtownBadmintonHall.png")
+    .build());
 
-        courtRepository.save(Court.builder().venue(downtown).sport(futsal)
-            .name("Lapangan Futsal").surfaceType("Hard Court").indoor(true).pricePerHour(255000).capacity(10)
-            .rating(4.5).reviewCount(100).status(CourtStatus.ACTIVE).badgeLabel("PREMIUM").build());
+      courtRepository.save(Court.builder().venue(downtown).sport(futsal)
+    .name("Premium SoccerField 73")
+    .surfaceType("Hard Court")
+    .indoor(true)
+    .pricePerHour(255000)
+    .capacity(10)
+    .rating(4.5)
+    .reviewCount(100)
+    .status(CourtStatus.ACTIVE)
+    .badgeLabel("PREMIUM")
+    .imageUrl("/images/area73.png")
+    .build());
 
         courtRepository.save(Court.builder().venue(eastSide).sport(basketball)
-            .name("Lapangan Voli").surfaceType("Clay").indoor(false).pricePerHour(150000).capacity(12)
-            .rating(4.2).reviewCount(78).status(CourtStatus.ACTIVE).build());
-
-        courtRepository.save(Court.builder().venue(glassHub).sport(padel)
-            .name("Lapangan Padel").surfaceType("Synthetic").indoor(true).pricePerHour(135000).capacity(4)
-            .rating(4.0).reviewCount(45).status(CourtStatus.MAINTENANCE).build());
+    .name("Lapangan Voli")
+    .surfaceType("Clay")
+    .indoor(false)
+    .pricePerHour(150000)
+    .capacity(12)
+    .rating(4.2)
+    .reviewCount(78)
+    .status(CourtStatus.ACTIVE)
+    .badgeLabel("AVAILABLE")
+    .imageUrl("/images/Volypremium.png")
+    .build());
 
         List<Court> allCourts = courtRepository.findAll();
         LocalDate today = LocalDate.now();

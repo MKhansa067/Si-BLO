@@ -8,7 +8,18 @@
     <main class="main-content">
         <!-- Hero Section -->
         <section style="height: 600px; display: flex; flex-direction: column; justify-content: center; position: relative; margin-bottom: var(--space-8);">
-            <div style="position: absolute; inset: 0; background: var(--color-bg-elevated); border-radius: var(--radius-xl); opacity: 0.3;"></div>
+            <div class="hero">
+    <video autoplay muted loop playsinline
+           style="position: absolute;
+                  inset: 0;
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                  border-radius: var(--radius-xl);
+                  opacity: 0.6;">
+        <source src="/videos/Panel.mp4" type="video/mp4">
+    </video>
+</div>
             <div style="position: relative; z-index: 1; max-width: 600px;">
                 <span class="badge badge-glass" style="margin-bottom: var(--space-5);">
                     <span style="width: 8px; height: 8px; background: var(--color-accent-primary); border-radius: 50%; display: inline-block;"></span>
@@ -51,7 +62,7 @@
             <div class="sport-grid">
                 <div th:each="sport : ${sports}" class="sport-card" th:data-sport-id="${sport.id}" th:data-sport-slug="${sport.slug}" onclick="filterBySport(this)">
                     <div class="sport-icon-box" th:text="${sport.icon}">🏀</div>
-                    <h3 th:text="${sport.name}">Basketball</h3>
+                    <h3 th:text="${sport.name}">Basketball and Volleyball</h3>
                     <p><span th:text="${sport.locationCount}">12</span> Locations</p>
                 </div>
             </div>
@@ -125,7 +136,15 @@
                         <div class="avatar-badge">+8k</div>
                     </div>
                 </div>
-                <div style="width: 200px; height: 200px; background: var(--color-bg-elevated); border-radius: var(--radius-xl); flex-shrink: 0;"></div>
+                <div style="
+    width: 200px;
+    height: 200px;
+    background-image: url('https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=1400&q=80');
+    background-size: cover;
+    background-position: center;
+    border-radius: var(--radius-xl);
+    flex-shrink: 0;
+"></div>
             </div>
         </section>
 

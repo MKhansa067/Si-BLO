@@ -190,9 +190,7 @@
             ' : '';
             return '\n\
                 <div class="booking-card">\n\
-                    <div class="booking-card-image">\n\
-                        <div style="position: absolute; inset: 0; background: linear-gradient(to top, var(--color-bg-primary) 0%, rgba(8,20,37,0) 100%);"></div>\n\
-                        <span class="badge badge-lime" style="position: absolute; top: var(--space-3); right: var(--space-3);">' + statusLabel + '</span>\n\
+                   <div class="booking-card-image" style="' + (b.courtImageUrl ? 'background-image: url(' + b.courtImageUrl + '); background-size: cover; background-position: center;' : '') + '">\n\
                     </div>\n\
                     <div class="booking-card-body">\n\
                         <h3>' + b.courtName + '</h3>\n\
