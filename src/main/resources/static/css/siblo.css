@@ -1180,3 +1180,378 @@ td {
   border: 2px solid var(--color-border-accent-strong);
   border-radius: 50%;
 }
+
+
+/* =========================
+   FUTURISTIC COURT DASHBOARD
+   ========================= */
+
+/* Background */
+body{
+    background:
+        radial-gradient(circle at 20% 20%, rgba(195,244,0,.12), transparent 25%),
+        radial-gradient(circle at 80% 80%, rgba(255,94,7,.12), transparent 25%),
+        linear-gradient(
+            135deg,
+            #07101c,
+            #081425,
+            #101f34
+        );
+
+    background-size:200% 200%;
+    animation:bgMove 15s ease infinite;
+    overflow-x:hidden;
+}
+
+/* Floating particles */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+
+    background-image:
+        radial-gradient(#c3f400 1px, transparent 1px);
+
+    background-size:60px 60px;
+    opacity:.05;
+
+    pointer-events:none;
+    z-index:-1;
+
+    animation:particleMove 20s linear infinite;
+}
+
+@keyframes particleMove{
+    from{
+        transform:translateY(0);
+    }
+    to{
+        transform:translateY(-120px);
+    }
+}
+
+@keyframes bgMove{
+    0%{
+        background-position:0% 50%;
+    }
+    100%{
+        background-position:100% 50%;
+    }
+}
+
+/* =========================
+   TITLE
+   ========================= */
+
+.dashboard-title{
+    color:#fff;
+
+    text-shadow:
+        0 0 10px rgba(195,244,0,.4),
+        0 0 20px rgba(195,244,0,.3),
+        0 0 40px rgba(195,244,0,.2);
+
+    animation:titleGlow 3s infinite alternate;
+}
+
+@keyframes titleGlow{
+    from{
+        text-shadow:
+            0 0 10px rgba(195,244,0,.3);
+    }
+
+    to{
+        text-shadow:
+            0 0 20px rgba(195,244,0,.8),
+            0 0 40px rgba(195,244,0,.5);
+    }
+}
+
+/* =========================
+   COURT CARD
+   ========================= */
+
+.court-card{
+    position:relative;
+    overflow:hidden;
+
+    background:rgba(255,255,255,.05);
+
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:24px;
+
+    opacity:0;
+
+    transition:all .4s ease;
+
+    animation:
+        fadeUp .8s forwards,
+        floatCard 5s ease-in-out infinite;
+}
+
+/* Animated border */
+.court-card::before{
+    content:"";
+    position:absolute;
+    inset:-2px;
+
+    background:linear-gradient(
+        45deg,
+        #c3f400,
+        #ff5e07,
+        #00d4ff,
+        #c3f400
+    );
+
+    background-size:300% 300%;
+    border-radius:26px;
+
+    z-index:-1;
+
+    animation:borderFlow 8s linear infinite;
+}
+
+/* Spotlight effect */
+.court-card::after{
+    content:"";
+    position:absolute;
+
+    width:250px;
+    height:250px;
+
+    top:-100px;
+    left:-100px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(195,244,0,.25),
+            transparent 70%
+        );
+
+    opacity:0;
+    transition:.5s;
+}
+
+.court-card:hover::after{
+    opacity:1;
+}
+
+.court-card:nth-child(1){
+    animation-delay:.1s;
+}
+
+.court-card:nth-child(2){
+    animation-delay:.2s;
+}
+
+.court-card:nth-child(3){
+    animation-delay:.3s;
+}
+
+.court-card:hover{
+    transform:translateY(-14px) scale(1.03);
+
+    border-color:rgba(195,244,0,.4);
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.45),
+        0 0 30px rgba(195,244,0,.25),
+        0 0 60px rgba(195,244,0,.15);
+}
+
+/* Shine effect */
+.shine{
+    position:absolute;
+
+    top:0;
+    left:-150%;
+
+    width:50%;
+    height:100%;
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.25),
+        transparent
+    );
+
+    transform:skewX(-25deg);
+}
+
+.court-card:hover .shine{
+    animation:shineMove .9s forwards;
+}
+
+/* =========================
+   IMAGE
+   ========================= */
+
+.court-image{
+    transition:transform .7s ease;
+}
+
+.court-card:hover .court-image{
+    transform:scale(1.08);
+}
+
+/* =========================
+   BUTTONS
+   ========================= */
+
+.btn-secondary,
+.btn-quick-book{
+    transition:.3s ease;
+}
+
+.btn-secondary:hover,
+.btn-quick-book:hover{
+    background:var(--color-accent-primary);
+    color:#000;
+
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 0 15px rgba(195,244,0,.5),
+        0 0 30px rgba(195,244,0,.3);
+}
+
+/* =========================
+   SIDEBAR
+   ========================= */
+
+.nav-item{
+    transition:.3s ease;
+}
+
+.nav-item:hover{
+    transform:translateX(10px);
+}
+
+/* =========================
+   SEARCH
+   ========================= */
+
+.search-bar{
+    transition:.3s ease;
+}
+
+.search-bar:hover,
+.search-bar:focus{
+    border-color:var(--color-accent-primary);
+
+    box-shadow:
+        0 0 15px rgba(195,244,0,.15),
+        0 0 30px rgba(195,244,0,.08);
+}
+
+/* =========================
+   NOTIFICATION
+   ========================= */
+
+.notification-dot{
+    animation:pulse 1.5s infinite;
+}
+
+/* =========================
+   BADGE
+   ========================= */
+
+.badge-lime{
+    animation:glow 2s infinite;
+}
+
+/* =========================
+   STAT CARD
+   ========================= */
+
+.stat-card{
+    transition:.3s ease;
+}
+
+.stat-card:hover{
+    transform:scale(1.05);
+}
+
+.stat-icon{
+    animation:bounce 2s infinite;
+}
+
+/* =========================
+   ANIMATIONS
+   ========================= */
+
+@keyframes borderFlow{
+    0%{
+        background-position:0% 50%;
+    }
+
+    100%{
+        background-position:300% 50%;
+    }
+}
+
+@keyframes floatCard{
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-8px);
+    }
+}
+
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(40px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes shineMove{
+    to{
+        left:180%;
+    }
+}
+
+@keyframes pulse{
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.6);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
+
+@keyframes glow{
+    50%{
+        box-shadow:
+            0 0 10px #c3f400,
+            0 0 20px #c3f400,
+            0 0 40px #c3f400;
+    }
+}
+
+@keyframes bounce{
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-8px);
+    }
+}
