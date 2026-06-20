@@ -35,6 +35,8 @@ public class SecurityConfig {
                     "/api/auth/**", "/api/sports/**", "/api/courts/**").permitAll()
                 .requestMatchers("/api/bookings/**").authenticated()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/payment/notification").permitAll()
+                .requestMatchers("/payment/charge/**").authenticated()
                 .anyRequest().permitAll()
             )
             .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
