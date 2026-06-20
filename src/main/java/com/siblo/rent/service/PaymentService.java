@@ -38,6 +38,7 @@ public PaymentService(PaymentRepository paymentRepository,
         payment.setAmount(booking.getTotalPrice());
         payment.setStatus(PaymentStatus.COMPLETED);
         payment.setMethod("SIMULATED");
+         payment.setOrderId("SIMULATED-" + booking.getId() + "-" + UUID.randomUUID().toString().substring(0, 8));
         payment.setPaidAt(LocalDateTime.now());
         return paymentRepository.save(payment);
     }
