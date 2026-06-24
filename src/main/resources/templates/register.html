@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Register')}">
+    <link rel="stylesheet" href="/css/siblo.css">
+</head>
+<body class="login-page">
+    <div class="login-card glass">
+        <h1>SI-BLO</h1>
+        <p class="tagline">Create Your Account</p>
+
+        <form id="registerForm" onsubmit="handleRegister(event)">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" name="name" placeholder="Enter your name" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Create a password" required minlength="6">
+            </div>
+            <button type="submit" class="btn-primary">Register</button>
+        </form>
+
+        <p class="register-link" style="margin-top: var(--space-4);">
+            Already have an account? <a href="/login">Sign In</a>
+        </p>
+    </div>
+
+    <script>
+    function handleRegister(event) {
+        event.preventDefault();
+        const form = event.target;
+
+        fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: form.name.value,
+                email: form.email.value,
+                password: form.password.value
+            })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data));
+                window.location.href = '/';
+            } else {
+                alert('Registration failed: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(() => {
+            alert('Registration failed. Please try again.');
+        });
+    }
+    </script>
+</body>
+</html>
