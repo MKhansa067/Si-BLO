@@ -37,6 +37,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/payment/notification").permitAll()
                 .requestMatchers("/payment/charge/**").authenticated()
+                .requestMatchers("/api/auth/register/send-otp").permitAll()
+                .requestMatchers("/api/auth/register/verify-otp").permitAll()
                 .anyRequest().permitAll()
             )
             .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
